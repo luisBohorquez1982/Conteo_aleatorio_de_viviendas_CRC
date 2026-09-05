@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRC - Selector Aleatorio de Viviendas | V25.17.3</title>
+    <link rel="stylesheet" href="styles_v16.4.css">
+    <link rel="manifest" href="manifest.webmanifest">
+
+<style>
+.acciones-recorrido{margin-top:18px;padding:16px;border:2px solid #005AA7;border-radius:10px;background:#f7fbff}
+.estado-recorrido{padding:10px;margin-bottom:8px;background:#eef5fb;border-left:4px solid #005AA7;line-height:1.6;word-break:break-word}
+.historico-crc{margin-top:24px;padding:18px;border:1px solid #d5dce5;border-radius:10px;background:#fff}
+.historico-crc h2{margin-top:0}
+.historico-scroll{overflow:auto}
+.historico-tabla{width:100%;border-collapse:collapse;min-width:980px}
+.historico-tabla th,.historico-tabla td{padding:9px 8px;border-bottom:1px solid #dfe5ec;text-align:left;font-size:.92rem}
+.historico-tabla th{background:#005AA7;color:#fff;position:sticky;top:0}
+.historico-tabla tr.clickable{cursor:pointer}
+.historico-tabla tr.clickable:hover{background:#eef6ff}
+.estado-chip{display:inline-block;padding:5px 8px;border-radius:14px;font-size:.78rem;font-weight:700;white-space:nowrap}
+.estado-chip.finalizada{background:#d9f4df;color:#176b2c}
+.estado-chip.finalizada-pendiente{background:#e2edf9;color:#075a9e}
+.estado-chip.parcial{background:#fff1c7;color:#7a5600}
+.estado-chip.parcial-pendiente{background:#fde0e0;color:#8a1c1c}
+.estado-chip.proceso{background:#e8eef4;color:#445b6d}
+.modo-lectura input,.modo-lectura select{background:#f0f2f4!important;pointer-events:none;opacity:.9}
+.bloque-solo-lectura{padding:12px;margin:12px 0;background:#f1f4f7;border-left:4px solid #5d7182}
+</style>
+<meta name="crc-version" content="V25.17.3"><!-- CRC V25.17.3 -->
+</head>
+
+<body>
+<div class="contenedor">
+
+    <header class="cabecera">
+        <h1>CRC</h1>
+        <h2>Módulo de Selección Aleatoria de Viviendas</h2>
+        <div style="margin-top:8px;font-size:12px;font-weight:700;color:#005AA7;letter-spacing:.5px;">VERSIÓN OPERATIVA: V25.17.3</div>
+    </header>
+
+    <section class="panel">
+
+        <div class="bloque-operacion">
+            <h3>Operación CRC</h3>
+
+            <div id="estadoCarga" class="estado carga">Cargando datos operativos...</div>
+            <div id="estadoRed" class="estado-red">Conectando...</div>
+            <button id="btnSincronizar" class="secundario" type="button">SINCRONIZAR AHORA</button>
+            <div id="resumenDatos" class="resumen-datos"></div>
+
+            <div class="fila">
+                <div class="grupo">
+                    <label>Fecha</label>
+                    <input type="text" id="fecha" readonly>
+                </div>
+
+                <div class="grupo">
+                    <label>Hora</label>
+                    <input type="text" id="hora" readonly>
+                </div>
+
+                <div class="grupo">
+                    <label>Región</label>
+                    <select id="region" disabled>
+                        <option value="">Seleccione...</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="fila">
+                <div class="grupo">
+                    <label>Departamento</label>
+                    <select id="departamento" disabled>
+                        <option value="">Seleccione...</option>
+                    </select>
+                </div>
+
+                <div class="grupo">
+                    <label>Ciudad / Municipio</label>
+                    <select id="municipio" disabled>
+                        <option value="">Seleccione...</option>
+                    </select>
+                </div>
+
+                <div class="grupo">
+                    <label>Área geográfica</label>
+                    <select id="areaGeografica" disabled>
+                        <option value="">Seleccione...</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="fila">
+                <div class="grupo">
+                    <label>Supervisor</label>
+                    <select id="supervisor" disabled>
+                        <option value="">Seleccione...</option>
+                    </select>
+                </div>
+
+                <div class="grupo">
+                    <label>Encuestador</label>
+                    <select id="encuestador" disabled>
+                        <option value="">Seleccione...</option>
+                    </select>
+                </div>
+
+                <div class="grupo">
+                    <label>Manzana MGN</label>
+                    <div class="mgn-selector">
+                        <input id="manzana" autocomplete="off" disabled placeholder="Escriba código MGN o número de manzana">
+                        <div id="listaManzanas" class="mgn-opciones" role="listbox" aria-label="Manzanas disponibles"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fila">
+                <div class="grupo">
+                    <label>Tipo de unidad</label>
+                    <input type="text" id="tipoUnidad" readonly>
+                </div>
+
+                <div class="grupo">
+                    <label>Viviendas según muestra</label>
+                    <input type="number" id="totalViviendas" readonly>
+                </div>
+
+                <div class="grupo">
+                    <label>Meta de viviendas</label>
+                    <input type="number" id="muestra" readonly>
+                </div>
+            </div>
+
+            <div class="fila">
+                <div class="grupo">
+                    <label>Conteo real de viviendas en campo</label>
+                    <input type="number" id="conteoReal" min="1" step="1" placeholder="Digite el conteo real">
+                </div>
+
+                <div class="grupo" style="grid-column:span 2;">
+                    <label>Validación del conteo</label>
+                    <div id="estadoConteo" class="grupo-info estado-conteo">
+                        Digite el conteo real de viviendas para definir el método de selección.
+                    </div>
+                </div>
+            </div>
+
+            <div id="grupoReemplazos" class="grupo-info"></div>
+
+            <button id="btnGenerar" disabled>
+                INICIAR / CARGAR RECORRIDO
+            </button>
+
+            <div id="estadoRecorridoInicial" class="grupo-info">
+                Seleccione una manzana MGN para iniciar un recorrido nuevo o continuar uno guardado.
+            </div>
+
+            <div class="nota-produccion">
+                Cada manzana se guarda automáticamente en el dispositivo. Puede guardarse PARCIALMENTE para retomarla después o FINALIZARSE cuando cumpla su meta. La sincronización se intenta automáticamente cuando existe conexión.
+            </div>
+        </div>
+    </section>
+
+    <section id="resultado"></section>
+    <section id="historicoCRC"></section>
+
+</div>
+
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="script_v25_13.js?v=25.17.3"></script>
+</body>
+</html>
